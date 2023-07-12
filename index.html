@@ -145,6 +145,7 @@
         event.preventDefault();
 
         var file = document.querySelector('input[type=file]').files[0];
+
         const scaleSelect = document.getElementById('scaleSelect');
         const selectedScale = scaleSelect.value;
         const faceEnhanceCheck = document.getElementById('faceEnhanceCheck');
@@ -153,10 +154,14 @@
         reader.readAsDataURL(file);
         reader.onloadend = async () => {
           const url = await uploadImage(reader.result, selectedScale, isFaceEnhanced);
-          enhanced.innerHTML = `<img class="img-fluid" src="${url}" > <br/><br><br> <a href="${reader.result}" class="btn btn-primary" download>Download</a>`;
+          enhanced.innerHTML = `<img class="img-fluid" src="${url}" > <br/><br><br><button onclick="downloadimg()" class="btn btn-primary">View</button>`;
         };
-        reader.download = 'enhanced.png';
       });
+      function downloadimg() {
+        var img = document.getElementById('enhanced').getElementsByTagName('img')[0];
+        var url = img.src.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+        window.open(url);
+      }
 
       const uploadImage = async (base64EncodedImage, scale = 2, face_enhance = false) => {
         try {
