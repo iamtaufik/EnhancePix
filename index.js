@@ -17,7 +17,7 @@ app.get('/', async (req, res) => {
   return res.sendFile(__dirname + '/index.html');
 });
 
-app.post('/api/upload', async (req, res) => {
+app.post('./api/upload', async (req, res) => {
   try {
     const fileStr = req.body.image;
     const scale = req.body.scale;
