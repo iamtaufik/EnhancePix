@@ -89,7 +89,7 @@
 
       const uploadImage = async (base64EncodedImage, scale = 2, face_enhance = false) => {
         try {
-          const response = await fetch('https://enhancepix.domcloud.io/api/upload', {
+          const response = await fetch('http://localhost:3000/api/upload', {
             method: 'POST',
             body: JSON.stringify({ image: base64EncodedImage, scale: scale, face_enhance: face_enhance }),
             headers: { 'Content-Type': 'application/json' },
