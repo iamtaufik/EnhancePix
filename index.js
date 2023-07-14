@@ -32,9 +32,9 @@ app.post('./api/upload', async (req, res) => {
         face_enchance: face_enchance,
       },
     });
-    //const result = await cloudinary.uploader.upload(output, {
-    //  upload_preset: 'download',
-    //});
+    const result = await cloudinary.uploader.upload(output, {
+      upload_preset: 'download',
+    });
     res.json({ url: output });
   } catch (err) {
     console.error(err);
