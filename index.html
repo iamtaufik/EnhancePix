@@ -154,15 +154,9 @@
         reader.readAsDataURL(file);
         reader.onloadend = async () => {
           const url = await uploadImage(reader.result, selectedScale, isFaceEnhanced);
-          enhanced.innerHTML = `<img class="img-fluid" src="${url}" > <br/><br><br><button onclick="downloadimg()" class="btn btn-primary">View</button>`;
+          enhanced.innerHTML = `<img class="img-fluid" src="${url}" > <br/> <a href="${reader.result}" class="btn btn-primary" download>Download</a>`;
         };
       });
-      function downloadimg() {
-        var img = document.getElementById('enhanced').getElementsByTagName('img')[0];
-        var url = img.src.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
-        window.open(url);
-      }
-
       const uploadImage = async (base64EncodedImage, scale = 2, face_enhance = false) => {
         try {
           const response = await fetch('http://localhost:3000/api/upload', {
