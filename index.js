@@ -25,15 +25,12 @@ app.post('/api/upload', async (req, res) => {
     const uploadResponse = await cloudinary.uploader.upload(fileStr, {
       upload_preset: 'dev_setups',
     });
-    const output = await replicate.run("nightmareai/real-esrgan:42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b", {
+    const output = await replicate.run('nightmareai/real-esrgan:42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b', {
       input: {
         image: uploadResponse.url,
         scale: parseInt(scale),
         face_enchance: face_enchance,
       },
-    });
-    const result = await cloudinary.uploader.upload(output, {
-      upload_preset: 'download',
     });
     res.json({ url: output });
   } catch (err) {
@@ -41,7 +38,8 @@ app.post('/api/upload', async (req, res) => {
     res.status(500).json({ err: 'Something went wrong' });
   }
 });
-const port = process.env.PORT || 3000;
+
+const port = process.env.PORT || $PORT;
 app.listen(port, () => {
-  console.log('listening on 3000');
+  console.log('');
 });
