@@ -38,7 +38,7 @@ app.post('/api/upload', async (req, res) => {
     res.status(500).json({ err: 'Something went wrong' });
   }
 });
-
+const address = process.env.REPLICATE_ADDRESS || 'enhance.domcloud.io';
 const port = process.env.PORT || 3010;
 app.listen(port, () => {
   console.log('');
