@@ -38,7 +38,7 @@ app.post('/api/upload', async (req, res) => {
     res.status(500).json({ err: 'Something went wrong' });
   }
 });
-const port = process.env.PORT || 6483;
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log('');
 });
