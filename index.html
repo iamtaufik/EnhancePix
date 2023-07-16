@@ -1,130 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+  <head>
+    <title>Image Enhancer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="p-5 mt-4 mb-4 bg-light rounded-3">
+        <h1 class="display-5 fw-bold">Image Enhancer</h1>
+        <p class="fs-4">
+          Transform your low-resolution images into stunning high-quality masterpieces with ease using our Flask web application. Powered by AI image upscaling technology, it effortlessly enhances the details and sharpness of your images.
+          Elevate your visual content and impress your audience with every click.
+        </p>
+        <hr class="my-4" />
+        <form class="row g-8 col-auto" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+          <div class="mb-3">
+            <label for="imageInput" class="form-label">Upload Image</label>
+            <input type="file" class="form-control" name="image" id="image-input" onchange="previewImage();" accept="image/*" />
+          </div>
 
-<head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+          <div class="mb-3">
+            <label for="scaleSelect" class="form-label">Scale (1-10)</label>
+            <select class="form-select" id="scaleSelect">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
 
-  <title>EnhancePix</title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
+          <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="faceEnhanceCheck" />
+            <label class="form-check-label" for="faceEnhanceCheck">Face Enhance</label>
+          </div>
 
-  <!-- Favicons -->
-  <link href="assets/img/favicon.png" rel="icon">
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com" rel="preconnect">
-  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
-
-  <!-- Vendor CSS Files -->
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
-
-  <!-- Template Main CSS File -->
-  <link href="assets/css/main.css" rel="stylesheet">
-
-  <!-- =======================================================
-  * Template Name: Append
-  * Updated: Jun 07 2023 with Bootstrap v5.3.0
-  * Template URL: https://bootstrapmade.com/append-bootstrap-website-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
-</head>
-
-<body class="index-page">
-
-
-
-  <!-- ======= Header ======= -->
-  <header id="header" class="header fixed-top d-flex align-items-center">
-    <div class="container-fluid d-flex align-items-center justify-content-between">
-
-      <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.png" alt=""> -->
-        <h1>EnhancePix</h1>
-        <span>.</span>
-      </a>
-
-      <!-- Nav Menu -->
-      <nav id="navmenu" class="navmenu">
-        <ul>
-          <li><a href="index.html" class="active">Beranda</a></li>
-          <li><a href="index.html#about">Tentang Kami</a></li>
-          <li><a href="index.html#pricing">Langganan</a></li>
-          <li><a href="index.html#team">Tim</a></li>
-          <li><a href="index.html#testimons">Testimoni</a></li>
-        </ul>
-
-        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-      </nav><!-- End Nav Menu -->
-    </div>
-  </header><!-- End Header -->
-
-  <main id="main">
-
-    <!-- Hero Section - Home Page -->
-    <section id="hero" class="hero">
-
-      <img src="assets/img/hero-bg.jpg" alt="" data-aos="fade-in">
-
-      <div class="container">
-        <div class="row">
-            <div class="col-lg-10">
-              <h2 data-aos="fade-up" data-aos-delay="100">Perbesar Kualitas Foto Anda </h2>
-              <p data-aos="fade-up" data-aos-delay="200">Gambar tampak buram atau resolusinya kurang bagus? Kini hadir Enhance Pix untuk memperbesar resolusi foto Anda secara online dengan mudah.</p>
-            <br>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <div class="row mt-5">
+          <div class="col-md-6 text-center">
+            <h3 class="mb-3">Original Image:</h3>
+            <div id="original" class="placeholder-glow">
+              <img id="preview" class="img-fluid" />
             </div>
           </div>
-           <div class="box1">
-            <form class="row g-8 col-auto" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
-            <div class="mb-3">
-              <label for="imageInput" class="form-label">Upload Image</label>
-              <input type="file" class="form-control" name="image" id="image-input" onchange="previewImage();" accept="image/*" />
-            </div>
-  
-            <div class="mb-3">
-              <label for="scaleSelect" class="form-label">Scale (1-5)</label>
-              <select class="form-select" id="scaleSelect">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-              </select>
-            </div>
-  
-            <div class="mb-3 form-check">
-              <input type="checkbox" class="form-check-input" id="faceEnhanceCheck" />
-              <label class="form-check-label" for="faceEnhanceCheck">Face Enhance</label>
-            </div>
-  
-            <a href="#"><button type="submit" class="btn btn-primary">Submit</button></a>
-          </form>
-    
-        </div>
-      </div>
+          <div class="col-md-6 text-center">
+            <h3 class="mb-3">Enhanced Image:</h3>
+            <div id="enhanced" class="placeholder-glow"></div>
           </div>
         </div>
-      </div>
-
-    </section><!-- End Hero Section -->
-    <div class="row mt-5">
-      <div class="col-md-6 text-center">
-        <h3 class="mb-3">Original Image:</h3>
-        <div id="original" class="placeholder-glow">
-          <img id="preview" class="img-fluid" />
-        </div>
-      </div>
-      <div class="col-md-6 text-center">
-        <h3 class="mb-3">Enhanced Image:</h3>
-        <div id="enhanced" class="placeholder-glow"></div>
       </div>
     </div>
     <script>
@@ -159,7 +83,7 @@
       });
       const uploadImage = async (base64EncodedImage, scale = 2, face_enhance = false) => {
         try {
-          const response = await fetch('http://localhost:3000/api/upload', {
+          const response = await fetch('http://enhance.domcloud.io/api/upload', {
             method: 'POST',
             body: JSON.stringify({ image: base64EncodedImage, scale: scale, face_enhance: face_enhance }),
             headers: { 'Content-Type': 'application/json' },
@@ -170,508 +94,6 @@
           console.error(err);
         }
       };
-   </script>
-  <!-- About Section - Home Page -->
-    <section id="about" class="about">
-
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-        <div class="row align-items-xl-center gy-5">
-
-          <div class="col-xl-5 content">
-            <h3>Tentang Kami</h3>
-            <h2>Enhance Pix</h2>
-            <p>Enhance Pix merupakan salah satu website yang digunakan untuk meningkatkan kualitas foto yang lebih baik dari sebelumnya. Enhance Pix menyediakan siapapun untuk berlangganan dan dapat mengupload foto tanpa batas.</p>
-            <a href="#" class="read-more"><span>Pelajari Lebih Lanjut</span><i class="bi bi-arrow-right"></i></a>
-          </div>
-
-          <div class="col-xl-7">
-            <div class="row gy-4 icon-boxes">
-
-              <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
-                <div class="icon-box">
-                  <i class="bi bi-buildings"></i>
-                  <h3>Kualitas</h3>
-                  <p>Enhance + Potrait dapat anda gunakan untuk memperjelas foto yang buram.</p>
-                </div>
-              </div> <!-- End Icon Box -->
-
-              <div class="col-md-6" data-aos="fade-up" data-aos-delay="300">
-                <div class="icon-box">
-                  <i class="bi bi-clipboard-pulse"></i>
-                  <h3>Versi Premium</h3>
-                  <p>Enhance Pix versi premium yang cukup terjangkau dengan cara berlangganan.</p>
-                </div>
-              </div> <!-- End Icon Box -->
-
-              <div class="col-md-6" data-aos="fade-up" data-aos-delay="400">
-                <div class="icon-box">
-                  <i class="bi bi-command"></i>
-                  <h3>Penggunaan Sederhana</h3>
-                  <p>Cara menggunakan Enhance Pix tergolong sederhana. Anda tidak butuh banyak langkah untuk meningkatkan kualitas foto sampai proses selesai</p>
-                </div>
-              </div> <!-- End Icon Box -->
-
-              <div class="col-md-6" data-aos="fade-up" data-aos-delay="500">
-                <div class="icon-box">
-                  <i class="bi bi-graph-up-arrow"></i>
-                  <h3>Kecepatan</h3>
-                  <p>Meningkatkan kualitas foto yang rendah menjadi pro dengan proses yang cepat.</p>
-                </div>
-              </div> <!-- End Icon Box -->
-
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-    </section><!-- End About Section -->
-
-
-    <!-- Features Section - Home Page -->
- <section id="features" class="features">
-
-
-  <div class="container">
-  
-    <div class="row gy-4 align-items-center features-item">
-      <div class="col-lg-5 order-2 order-lg-1" data-aos="fade-up" data-aos-delay="200">
-        <h3>Ubah ukuran foto online</h3>
-        <P align="justify">
-        Setiap format dan platform membutuhkan ukuran gambar yang berbeda-beda, baik itu foto profil media sosial, banner YouTube, Instagram story, hingga GIF. Dengan Enhance Pix, 
-        Anda bisa mendapatkan foto dengan kualitas foto yang biak tanpa harus mendownload software apa pun. Anda hanya perlu meletakkan file gambar, klik upload, kemudian tunggu hingga perubahan kualitas foto berhasil.
-        Mengapa Enhance Pix penting? Kalau Anda pernah membuat website, toko online, atau menggunakan media sosial, pasti Anda sudah tahu pentingnya kualitas gambar bagi kenyamanan pengunjung.
-        utuk itulah terkadang Anda perlu mengubah dimensi gambar produk maupun postingan agar ditampilkan dengan optimal di internet.
-  
-        </P>
-  
-      </div>
-      <div class="col-lg-7 order-1 order-lg-2 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="100">
-        <div class="image-stack">
-          <img src="assets/img/gambar/1.jpg" alt="" class="stack-front">
-          <img src="assets/img/gambar/2.jpg" alt="" class="stack-back">
-        </div>
-      </div>
-    </div><!-- Features Item -->
-    <div class="row gy-6 align-items-stretch justify-content-between features-item ">
-      <div class="col-lg-6 d-flex align-items-center features-img-bg" data-aos="zoom-out">
-        <img src="assets/img/gambar/3.png" class="img-fluid" alt="">
-      </div>
-      <div class="col-lg-5 d-flex justify-content-center flex-column" data-aos="fade-up">
-        <h3>Apa saja format file yang didukung</h3>
-        <p align="justify">Tool ini dapat mengubah ukuran foto dengan format file yang banyak digunakan di internet. Untuk cara penggunaannya, 
-          cukup tarik dan letakkan gambar yang akan diedit ke tool ini. Tunggu hingga proses perbaikan kualitas gambar berhasil. Hasil gambar yang telah diubah kualitasnya bisa Anda download. </p>
-        <ul>
-          <li><i class="bi bi-check"></i> <span>Format file yang di dukung seperti Jpg, Jpeg dan Png.</span></li>
-          <li><i class="bi bi-check"></i><span>Pastikan file yang di upload sesuai</span></li>
-          <li><i class="bi bi-check"></i> <span>Tunggu dan bersabar hingga proses selesai</span>.</li>
-        </ul>
-     
-      </div>
-    </div><!-- Features Item -->
-  
-  </div>
-  
-  </section><!-- End Features Section -->
-
-    <!-- Pricing Section - Home Page -->
- <section id="pricing" class="pricing">
-
-  <!--  Section Title -->
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Langganan</h2>
-    <p>Nikmati fitur upload foto tanpa batas dengan berlangganan di Enhance Pix</p>
-  </div><!-- End Section Title -->
-  
-  <div class="container" data-aos="zoom-in" data-aos-delay="100">
-  
-    <div class="row g-4">
-  
-      <div class="col-lg-4">
-        <div class="pricing-item">
-          <h3>Mingguan</h3>
-          <div class="icon">
-            <i class="bi bi-box"></i>
-          </div>
-          <h4><sup>Rp</sup>30.000<span> / Minggu</span></h4>
-          <ul>
-            <li><i class="bi bi-check"></i> <span>Tingkatkan hingga 10 foto perminggu</span></li>
-            <li><i class="bi bi-check"></i> <span>Semua model AI tersedia</span></li>
-            <li><i class="bi bi-check"></i> <span>Hasil fromat gambar: JPG only</span></li>
-            <li class="na"><i class="bi bi-x"></i> <span>Dapat dibatalkan kapan saja</span></li>
-          </ul>
-          <div class="text-center"><a href="#" class="buy-btn">Beli Sekarang</a></div>
-        </div>
-      </div><!-- End Pricing Item -->
-      <div class="col-lg-4">
-        <div class="pricing-item featured">
-          <h3>Bulanan</h3>
-          <div class="icon">
-            <i class="bi bi-rocket"></i>
-          </div>
-  
-          <h4><sup>Rp</sup>110.000<span> / bulanan</span></h4>
-          <ul>
-          <li><i class="bi bi-check"></i> <span>Tingkatkan hingga 100 foto bulan</span></li>
-            <li><i class="bi bi-check"></i> <span>Semua model AI tersedia</span></li>
-            <li><i class="bi bi-check"></i> <span>Hasil fromat gambar: JPG only</span></li>
-            <li class="na"><i class="bi bi-x"></i> <span>Dapat dibatalkan kapan saja</span></li>
-          </ul>
-          <div class="text-center"><a href="#" class="buy-btn">Beli Sekarang</a></div>
-        </div>
-      </div><!-- End Pricing Item -->
-  
-      <div class="col-lg-4">
-        <div class="pricing-item">
-          <h3>Developer Plan</h3>
-          <div class="icon">
-            <i class="bi bi-send"></i>
-          </div>
-          <h4><sup>Rp</sup>1.150.000<span> / Tahun</span></h4>
-          <ul>
-          <li><i class="bi bi-check"></i> <span>Tingkatkan ada batasan upload</span></li>
-            <li><i class="bi bi-check"></i> <span>Semua model AI tersedia</span></li>
-            <li><i class="bi bi-check"></i> <span>Hasil fromat gambar: JPG only</span></li>
-            <li class="na"><i class="bi bi-x"></i> <span>Dapat dibatalkan kapan saja</span></li>
-          </ul>
-          <div class="text-center"><a href="#" class="buy-btn">Beli Sekarang</a></div>
-        </div>
-      </div><!-- End Pricing Item -->
-  
-    </div>
-  
-  </div>
-  
-  </section><!-- End Pricing Section -->  
-
-
-    <!-- Faq Section - Home Page -->
- <section id="faq" class="faq">
-
-  <div class="container">
-  
-    <div class="row gy-4">
-  
-      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
-        <div class="content px-xl-5">
-          <h3><span>Peryanyaan yang sering ditanyakan</span></h3>
-          <p>
-            Masih bingung tentang Enhance Pix ? Berikut adalah pertanyaan yang sering ditanyakan.
-          </p>
-        </div>
-      </div>
-  
-      <div class="col-lg-8" data-aos="fade-up" data-aos-delay="200">
-  
-        <div class="faq-container">
-          <div class="faq-item faq-active">
-            <h3><span class="num">1.</span> <span>Apa saja kegunaan umum tool pengubah kualitas foto ini?</span></h3>
-            <div class="faq-content">
-              <p>Tool pengubah ukuran foto berguna untuk memperbaiki gambar sesuai dimensi tertentu.
-                  Foto yang Anda miliki pun hadir dalam ukuran kualitas yang berbeda-beda.Nah, tool inilah yang akan membantu Anda memperbaiki kualitas gambar  tanpa melakukan cropping atau kompres. 
-                  Konten visual yang baik dapat meningkatkan kredibilitas website dan meningkatkan kenyamanan pengunjung. Tanpa gambar berkualitas, website atau toko online Anda tampak kurang profesional dan besar kemungkinan pengunjung tidak akan betah berlama-lama.</p>
-            </div>
-            <i class="faq-toggle bi bi-chevron-right"></i>
-          </div><!-- End Faq item-->
-          <div class="faq-item">
-            <h3><span class="num">2.</span> <span>Bagaimana cara menggunakan tool Enhance Pix ini? </span></h3>
-            <div class="faq-content">
-              <p>Caranya sangat mudah. Anda cukup mengunggah foto ke halaman tool,dan serahkan sisanya kepada kami.
-                  Kami merekomendasikan format file .JPG dan .PNG untuk hasil terbaik. Dan jangan khawatir, proses editing ini tidak akan menurunkan resolusi maupun kualitas foto Anda.</p>
-            </div>
-            <i class="faq-toggle bi bi-chevron-right"></i>
-          </div><!-- End Faq item-->
-  
-          <div class="faq-item">
-            <h3><span class="num">3.</span>Apakah tool Enhance Pix gratis?</span></h3>
-            <div class="faq-content">
-              <p>Untuk unggahan pertama kali Enhance Pix bersifat free, akan tetapi untuk unggahan foto berikutnya user di minta untuk berlangganan</p>
-            </div>
-            <i class="faq-toggle bi bi-chevron-right"></i>
-          </div><!-- End Faq item-->
-  
-        </div>
-  
-      </div>
-    </div>
-  
-  </div>
-</section><!-- End Faq Section -->    
-    <!-- Team Section - Home Page -->
-    <section id="team" class="team">
-
-      <!--  Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Team</h2>
-        <p>Website Enhance Pix Ini Dibuat Oleh Beberapa Team </p>
-      </div><!-- End Section Title -->
-
-      <div class="container">
-
-        <div class="row gy-5">
-
-          <div class="col-lg-4 col-md-6 member" data-aos="fade-up" data-aos-delay="200">
-            <div class="member-img">
-              <img src="assets/img/team/team1.jpg" class="img-fluid" alt="">
-            </div>
-            <div class="member-info text-center">
-              <h4>Anggi Thoat Ariyanto</h4>
-              <span>21.12.2013</span>
-              <p>Ketua Team Pembuatan Website Enhance Pix</p>
-            </div>
-          </div><!-- End Team Member -->
-
-          <div class="col-lg-4 col-md-6 member" data-aos="fade-up" data-aos-delay="200">
-            <div class="member-img">
-              <img src="assets/img/team/team2.jpg" class="img-fluid" alt="">
-            </div>
-            <div class="member-info text-center">
-              <h4>Fanny Novatriana Kristianti</h4>
-              <span>21.12.2015</span>
-              <p>Anggota Team Pembuatan Website Enhance Pix </p>
-            </div>
-          </div><!-- End Team Member -->
-
-          <div class="col-lg-4 col-md-6 member" data-aos="fade-up" data-aos-delay="200">
-            <div class="member-img">
-              <img src="assets/img/team/team3.jpg" class="img-fluid" alt="">
-            </div>
-            <div class="member-info text-center">
-              <h4>M Safri Syamsudin</h4>
-              <span>21.12.2043</span>
-              <p>Anggota Team Pembuatan Website Enhance Pix</p>
-            </div>
-          </div><!-- End Team Member -->
-
-          <div class="col-lg-4 col-md-6 member" data-aos="fade-up" data-aos-delay="200">
-            <div class="member-img">
-              <img src="assets/img/team/team4.jpg" class="img-fluid" alt="">
-            </div>
-            <div class="member-info text-center">
-              <h4>Jahnawi Kesianata</h4>
-              <span>21.12.2021</span>
-              <p>Anggota Team Pembuatan Website Enhance Pix</p>
-            </div>
-          </div><!-- End Team Member -->
-
-          <div class="col-lg-4 col-md-6 member" data-aos="fade-up" data-aos-delay="200">
-            <div class="member-img">
-              <img src="assets/img/team/team5.jpg" class="img-fluid" alt="">
-            </div>
-            <div class="member-info text-center">
-              <h4>Devi Andiska P</h4>
-              <span>21.12.2046</span>
-              <p>Anggota Team Pembuatan Website Enhance Pix</p>
-            </div>
-          </div><!-- End Team Member -->
-
-        </div>
-
-      </div>
-
-    </section><!-- End Team Section -->
-
-   <!-- Testimonials Section - Home Page -->
-   <section id="testimons" class="testimonials">
-
-    <div class="container">
-
-      <div class="row align-items-center">
-
-        <div class="col-lg-5 info" data-aos="fade-up" data-aos-delay="100">
-          <h3>Testimoni</h3>
-          <p>
-            Testimoni di samping mencerminkan pengalaman nyata dari pengguna yang telah menggunakan website
-            Enhance Pix dan puas dengan hasilnya. Testimoni ini menunjukkan kegunaan website tersebut dalam 
-            meningkatkan kualitas gambar dengan mudah dan memberikan kesan positif kepada para pengguna.
-          </p>
-        </div>
-
-        <div class="col-lg-7" data-aos="fade-up" data-aos-delay="200">
-
-          <div class="swiper">
-            <template class="swiper-config">
-              {
-              "loop": true,
-              "speed" : 600,
-              "autoplay": {
-              "delay": 5000
-              },
-              "slidesPerView": "auto",
-              "pagination": {
-              "el": ".swiper-pagination",
-              "type": "bullets",
-              "clickable": true
-              }
-              }
-            </template>
-            <div class="swiper-wrapper">
-
-              <div class="swiper-slide">
-                <div class="testimonial-item">
-                  <div class="d-flex">
-                    <img src="assets/img/testimonials/pic1.jpg" class="testimonial-img flex-shrink-0" alt="">
-                    <div>
-                      <h3>Anggi</h3>
-                      <h4>Fotografer</h4>
-                      <div class="stars">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <p>
-                    <i class="bi bi-quote quote-icon-left"></i>
-                    <span>Sebagai seorang fotografer, kualitas gambar sangat penting bagi saya. 
-                      Saya telah mencoba berbagai perangkat lunak dan aplikasi untuk meningkatkan kualitas gambar, 
-                      tetapi Enhance.Pix benar-benar memukau saya.</span>
-                    <i class="bi bi-quote quote-icon-right"></i>
-                  </p>
-                </div>
-              </div><!-- End testimonial item -->
-
-              <div class="swiper-slide">
-                <div class="testimonial-item">
-                  <div class="d-flex">
-                    <img src="assets/img/testimonials/pic2.jpg" class="testimonial-img flex-shrink-0" alt="">
-                    <div>
-                      <h3>Nanat</h3>
-                      <h4>Designer grafis</h4>
-                      <div class="stars">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <p>
-                    <i class="bi bi-quote quote-icon-left"></i>
-                    <span>Saya sangat terkesan dengan kemampuan website Enhance Pix dalam meningkatkan kualitas gambar. 
-                      Saya memiliki beberapa foto lama yang buram dan kurang jelas, kemudian saya mengubah kualitasnya 
-                      menjadi lebih tinggi dengan satu kali klik saja.</span>
-                    <i class="bi bi-quote quote-icon-right"></i>
-                  </p>
-                </div>
-              </div><!-- End testimonial item -->
-
-              <div class="swiper-slide">
-                <div class="testimonial-item">
-                  <div class="d-flex">
-                    <img src="assets/img/testimonials/pic3.jpg" class="testimonial-img flex-shrink-0" alt="">
-                    <div>
-                      <h3>Panniw</h3>
-                      <h4>Store Owner</h4>
-                      <div class="stars">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <p>
-                    <i class="bi bi-quote quote-icon-left"></i>
-                    <span>Saya sangat merekomendasikan website ini kepada siapa pun 
-                      yang ingin meningkatkan kualitas gambar mereka dengan cepat dan mudah.</span>
-                    <i class="bi bi-quote quote-icon-right"></i>
-                  </p>
-                </div>
-              </div><!-- End testimonial item -->
-
-              <div class="swiper-slide">
-                <div class="testimonial-item">
-                  <div class="d-flex">
-                    <img src="assets/img/testimonials/pic4.jpg" class="testimonial-img flex-shrink-0" alt="">
-                    <div>
-                      <h3>Juki</h3>
-                      <h4>Freelancer</h4>
-                      <div class="stars">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <p>
-                    <i class="bi bi-quote quote-icon-left"></i>
-                    <span>Website ini membantu saya untuk meningkatkan kualitas gambar dengan mudah dan hasilnya memuaskan.
-                      Saya sangat merekomendasikan website ini kepada para profesional kreatif yang ingin meningkatkan kualitas gambar mereka.
-                    </span>
-                    <i class="bi bi-quote quote-icon-right"></i>
-                  </p>
-                </div>
-              </div><!-- End testimonial item -->
-
-              <div class="swiper-slide">
-                <div class="testimonial-item">
-                  <div class="d-flex">
-                    <img src="assets/img/testimonials/pic5.jpg" class="testimonial-img flex-shrink-0" alt="">
-                    <div>
-                      <h3>Depoy</h3>
-                      <h4>Entrepreneur</h4>
-                      <div class="stars">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <p>
-                    <i class="bi bi-quote quote-icon-left"></i>
-                    <span>Saya memiliki banyak foto keluarga yang buram dan usang, tetapi website ini memungkinkan 
-                      saya untuk menghidupkan kembali gambar-gambar tersebut. Hasilnya luar biasa! Gambar-gambar 
-                      tersebut sekarang tampak segar, jelas, dan penuh warna. </span>
-                    <i class="bi bi-quote quote-icon-right"></i>
-                  </p>
-                </div>
-              </div><!-- End testimonial item -->
-
-            </div>
-            <div class="swiper-pagination"></div>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </section><!-- End Testimonials Section -->
-
-  </main>
-
-  <!-- ======= Footer ======= -->
-  <footer id="footer" class="footer">
-      <section id="contact" class="contact">
-    <!--  Section Title -->
-        <div class="container section-title" data-aos="fade-up">
-          <h2>Coba Enhance Pix Sekarang</h2>
-          <h1>Lihat sebelum dan sesudahnya. Nikmati hasil memuaskan dari perubahan gambar Anda.</h1>
-          <br>
-          <br>
-          <center> <div class="bottom-nav">
-            <div class="bottom-link-nav"> 
-            <a href="#"><strong>Coba Sekarang</strong></a>
-          </div></center>
-        </div><!-- End Section Title -->
-            </div>
-          </div>
-        </section><!-- End Contact Section -->
-    </footer><!-- End Footer -->
-
-  <!-- Scroll Top Button -->
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-  <!-- Preloader -->
-  <div id="preloader">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-  </div>
-
-  <!-- Vendor JS Files -->
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
-  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="assets/vendor/aos/aos.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
-
-  <!-- Template Main JS File -->
-  <script src="assets/js/main.js"></script>
-
-</body>
-
+    </script>
+  </body>
 </html>
