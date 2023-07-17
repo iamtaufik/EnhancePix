@@ -17,6 +17,10 @@ app.get('/', async (req, res) => {
   return res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/api', async (req, res) => {
+  res.status(200).json({ message: 'Welcome to the API' });
+});
+
 app.post('/api/upload', async (req, res) => {
   try {
     const fileStr = req.body.image;
@@ -35,10 +39,10 @@ app.post('/api/upload', async (req, res) => {
     res.json({ url: output });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ err: 'Something went wrong' });
+    res.status(500).json({ err: err.message });
   }
 });
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log('');
+  console.log('Server Up and Running');
 });
